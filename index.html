@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>Xp&#39;s Deep Note</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="對於種種現象、事件總是要有個自圓其說的說法、合理的想法。這邊紀錄的任何事情若有錯誤歡迎指正!">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Xp&#39;s Deep Note">
+<meta property="og:url" content="https://minecraftxwinp.github.io/index.html">
+<meta property="og:site_name" content="Xp&#39;s Deep Note">
+<meta property="og:description" content="對於種種現象、事件總是要有個自圓其說的說法、合理的想法。這邊紀錄的任何事情若有錯誤歡迎指正!">
+<meta property="og:locale" content="zh-TW">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Xp&#39;s Deep Note">
+<meta name="twitter:description" content="對於種種現象、事件總是要有個自圓其說的說法、合理的想法。這邊紀錄的任何事情若有錯誤歡迎指正!">
+<meta name="twitter:creator" content="@tony84727">
+  
+    <link rel="alternate" href="/atom.xml" title="Xp&#39;s Deep Note" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-101871003-2', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics --><!-- hexo-inject:begin --><link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css'><!-- hexo-inject:end -->
+
+
+</head>
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Xp&#39;s Deep Note</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">紀錄我探討過得議題及日誌</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://minecraftxwinp.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-用CMake在建置時複製檔案到輸出執行檔的目錄" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/" class="article-date">
+  <time datetime="2017-11-27T13:45:00.000Z" itemprop="datePublished">2017-11-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/">用CMake在建置時複製檔案到輸出執行檔的目錄</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>CMake有指令file(COPY …)可以用來copy檔案，可是如果將此指令寫在CMakeLists.txt中，該指令只會在configuration階段複製檔案。<br>有時我們會希望每次建置、make時都copy一次檔案。</p>
+<h2 id="自己遇到的使用案例-更新shader-source-file"><a href="#自己遇到的使用案例-更新shader-source-file" class="headerlink" title="自己遇到的使用案例 : 更新shader source file"></a>自己遇到的使用案例 : 更新shader source file</h2><p>OpenGL的shader是在Runtime用OpenGL的API將source code交給drive編譯的，因此在runtime需要有檔案提供shader的source。<br>這類檔案就像DLL一樣當程式啟動時需要能找到並載入，將檔案跟執行檔放在同一個目錄之下是最簡單的做法。</p>
+<p>因此我的需求是要cmake每次都將source tree(原始碼目錄)中的shader file複製到build tree(建置目錄)中執行檔的目錄。</p>
+<p>對於純粹想建置專案的人來說，把file(COPY …)寫在CMakeLists.txt中是OK的，因為檔案有copy到build tree就好。</p>
+<p>但是對於專案開發者來說，需要能在每次建置時都從source tree複製shader到build tree中，以確保使用最新版本的shader file執行Debug。當然也可以手動，比較麻煩就是了。</p>
+<p>如前所述，只將複製指令寫在CMakeLists.txt是不夠的。</p>
+<h2 id="利用add-custom-target或add-custom-command安插建置步驟，使任務在建置時執行"><a href="#利用add-custom-target或add-custom-command安插建置步驟，使任務在建置時執行" class="headerlink" title="利用add_custom_target或add_custom_command安插建置步驟，使任務在建置時執行"></a>利用add_custom_target或add_custom_command安插建置步驟，使任務在建置時執行</h2><p>上StackOverflow找到的相關解答：</p>
+<ul>
+<li><a href="https://stackoverflow.com/questions/36483801/cmake-softlink-resource-such-as-glsl-shaders-or-copy-each-complilation" target="_blank" rel="external">CMake : softlink resource ( such as GLSL shaders ) or copy each complilation</a></li>
+</ul>
+<p>大致上，這方法額外寫個CMake檔案並利用add_custom_target安插執行此cmake檔案的步驟，該cmake腳本內的指令就是file(COPY …)</p>
+<p>若想讓特定事件在每次建置時發生可利用這類方法</p>
+<h2 id="更好的方法"><a href="#更好的方法" class="headerlink" title="更好的方法"></a>更好的方法</h2><p>S.O.上找到的方法需要額外的cmake file，並使用script processing mode執行。我發現cmake除了processing mode也有command mode。該模式透過加入flag “-E” 切換：</p>
+<img src="/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/cmake-command-mode.png" title="CMake command mode">
+<p>cmake已經為我們準備了需多常用的指令，接下來只要如法炮製讓cmake在建置時觸發cmake的copy command就行了：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">add_custom_target</span>(</div><div class="line">    <span class="comment"># 自訂的目標名稱</span></div><div class="line">    copy_shader_files</div><div class="line">    <span class="comment"># 執行copy指令 cmake -E copy &lt;file&gt;... destination </span></div><div class="line">    <span class="variable">$&#123;CMAKE_COMMAND&#125;</span> -E copy <span class="variable">$&#123;CMAKE_SOURCE_DIR&#125;</span>/shaders/** <span class="variable">$&#123;CMAKE_BINARY_DIR&#125;</span></div><div class="line">)</div><div class="line"><span class="comment"># 用add_dependencies將自訂目標列為建置目標的dependency</span></div><div class="line"><span class="keyword">add_dependencies</span>(main copy_shader_files)</div></pre></td></tr></table></figure>
+<p>建立自訂目標後cmake會在指定的建置系統中建置對應的目標，如果建置系統為Unix make可以用以下指令執行copy指令：</p>
+<img src="/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/make-custom-target.png" title="Invoke custom target">
+<h2 id="問題-Xcode或Visual-Studio的build-type目錄"><a href="#問題-Xcode或Visual-Studio的build-type目錄" class="headerlink" title="問題: Xcode或Visual Studio的build type目錄"></a>問題: Xcode或Visual Studio的build type目錄</h2><p>若你是使用Unix make或許到目前已經功德圓滿了，建置系統會在每次建置執行檔時幫我們複製shader。可是我遇到問題了。</p>
+<p>Xcode或Visual Studio這類IDE內建build type而不同build type的執行檔通常會放在不同目錄裡：</p>
+<img src="/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/build-type-folder.png" title="Problems with build type folder">
+<p>Oh no..輸出的執行檔main在Debug下，而我們的shaders卻在Debug之外。可見CMAKE_SOURCE_DIR變數指向的位置跟實際執行檔輸出的位置是可能有出入的。</p>
+<p>執行檔會輸出到哪是IDE決定的，而IDE的專案是CMake的Generator產生的，因此除非將路徑寫死在CMakeLists.txt，否則輸出路徑是generator決定的。</p>
+<p>shader被複製到哪裡並不重要，只要他跟輸出的執行擋在同一個目錄即可。</p>
+<p>對於Generating階段才做的決定cmake有一類像placeholder的特殊變數(`$’開頭，很像變數)代表generator給出的值。</p>
+<p>使用 $<target_file_dir:<目標名稱>&gt; 代表目標檔案的目錄。</target_file_dir:<目標名稱></p>
+<p>我的執行檔建置目標稱為main，因此 $<target_file_dir:main> 指向main目標產生的檔案的所在目錄，也就是執行檔所在的目錄。</target_file_dir:main></p>
+<p>可是，單純的修改先前的code會得到cyclic depedencies錯誤。</p>
+<p>建置目標的depdencies為我們的copy_shader_files目標，而要決定檔案目的地的卻又是建置目標，造成循環相依性。</p>
+<h2 id="add-custom-command"><a href="#add-custom-command" class="headerlink" title="add_custom_command"></a>add_custom_command</h2><p>別灰心，除了add_custom_target，我們還可以透過add_custom_command叫cmake幫我們做事。只是add_custom_command不會在建置系統中建立任務或目標，沒辦法手動啟動，對於建置系統來說就是建置執行檔的一個環節。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">add_custom_command</span>(</div><div class="line">    <span class="comment"># 指令依附的目標</span></div><div class="line">    TARGET main</div><div class="line">    <span class="comment"># 自訂指令的執行時機</span></div><div class="line">    POST_BUILD</div><div class="line">    <span class="comment"># COMMAND關鍵字後為執行指令</span></div><div class="line">    COMMAND</div><div class="line">        <span class="variable">$&#123;CMAKE_COMMAND&#125;</span> -E copy <span class="variable">$&#123;CMAKE_SOURCE_DIR&#125;</span>/shaders/** $&lt;TARGET_FILE_DIR:main&gt;</div><div class="line">)</div></pre></td></tr></table></figure>
+<p>add_custom_command的語法稍微不同，不過指令依然是cmake的command mode。</p>
+<p>目前這段code可以滿足我的需求： 在每次建置時把檔案複製到執行檔的目錄中。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://minecraftxwinp.github.io/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/" data-id="cjagyw2pb00000quk20ugige1" class="article-share-link">Share</a>
+      
+        <a href="https://minecraftxwinp.github.io/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cmake/">cmake</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Classification問題-Sigmoid function" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/10/16/Classification問題-Sigmoid function/" class="article-date">
+  <time datetime="2017-10-16T12:09:00.000Z" itemprop="datePublished">2017-10-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/10/16/Classification問題-Sigmoid function/">Classification問題-Sigmoid function</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在Andrew Ng於Coursera的課程中先是教我們如何定義hypothesis function而後如何使用normal equation或是gradient descent找出最接近事實(也就是最接近training set)的function。hypothesis function是一個方程式，以feature為參數能算出target feature的值。例如，可以用這種演算法來推估建物的價值：</p>
+<h3 id="linear-regression-example"><a href="#linear-regression-example" class="headerlink" title="linear regression example"></a>linear regression example</h3><p>要預測建物的售價，那麼可能的feature可以是：</p>
+<ol>
+<li>房間數量 令其為<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">x_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="base textstyle uncramped"><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathrm">1</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span></span></li>
+<li>建物年齡 令其為<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>x</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">x_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="base textstyle uncramped"><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathrm">2</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span></span></li>
+<li>最近的交通樞紐的距離 令其為<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>x</mi><mn>3</mn></msub></mrow><annotation encoding="application/x-tex">x_3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="base textstyle uncramped"><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathrm">3</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span></span></li>
+</ol>
+<p>假設只有以上三個feature可以假設出hyposithes <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>h</mi></mrow><annotation encoding="application/x-tex">h</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit">h</span></span></span></span>:<br><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>h</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><msub><mi>θ</mi><mn>0</mn></msub><msub><mi>x</mi><mn>0</mn></msub><mo>+</mo><msub><mi>θ</mi><mn>1</mn></msub><msub><mi>x</mi><mn>1</mn></msub><mo>+</mo><msub><mi>θ</mi><mn>2</mn></msub><msub><mi>x</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">h(x) = \theta_0 x_0 + \theta_1 x_1 + \theta_2 x_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord mathit">h</span><span class="mopen">(</span><span class="mord mathit">x</span><span class="mclose">)</span><span class="mrel">=</span><span class="mord"><span class="mord mathit" style="margin-right:0.02778em;">θ</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.02778em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathrm">0</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathrm">0</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mbin">+</span><span class="mord"><span class="mord mathit" style="margin-right:0.02778em;">θ</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.02778em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathrm">1</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathrm">1</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mbin">+</span><span class="mord"><span class="mord mathit" style="margin-right:0.02778em;">θ</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.02778em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathrm">2</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathrm">2</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span></span></span></p>
+<p>接下來要找出合適的<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>θ</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">\theta_k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="base textstyle uncramped"><span class="mord"><span class="mord mathit" style="margin-right:0.02778em;">θ</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.02778em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathit" style="margin-right:0.03148em;">k</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span></span>使得<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>h</mi></mrow><annotation encoding="application/x-tex">h</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit">h</span></span></span></span>盡量符合fact，也就是讓error降到最低。<br>hyposisthes的error就是每個training sample與hypothesis的誤差總和。<br>對於sample $i$推估的誤差為：<br><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>e</mi><mo>=</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><mi>h</mi><mo>(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>)</mo></mrow><annotation encoding="application/x-tex">e = y_i - h(x_i)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord mathit">e</span><span class="mrel">=</span><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.03588em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathit">i</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mbin">−</span><span class="mord mathit">h</span><span class="mopen">(</span><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathit">i</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mclose">)</span></span></span></span></span></p>
+<p>*$x_i$為vector<br><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi><mo>=</mo><mrow><mo fence="true">[</mo><mtable><mtr><mtd><mrow><msub><mi>x</mi><mn>0</mn></msub></mrow></mtd><mtd><mrow><msub><mi>x</mi><mn>1</mn></msub></mrow></mtd><mtd><mrow><msub><mi>x</mi><mn>2</mn></msub></mrow></mtd></mtr></mtable><mo fence="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">x = \begin{bmatrix}x_0&amp;x_1&amp;x_2\end{bmatrix}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.8500000000000001em;"></span><span class="strut bottom" style="height:1.20001em;vertical-align:-0.35001em;"></span><span class="base textstyle uncramped"><span class="mord mathit">x</span><span class="mrel">=</span><span class="minner textstyle uncramped"><span class="style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size1">[</span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist"><span style="top:-0.010000000000000009em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="mord textstyle uncramped"><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathrm">0</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist"><span style="top:-0.010000000000000009em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="mord textstyle uncramped"><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathrm">1</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist"><span style="top:-0.010000000000000009em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="mord textstyle uncramped"><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathrm">2</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span><span class="style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size1">]</span></span></span></span></span></span></p>
+<p>如果error的總和越小代表hypothesis越接近fact，為了避免error正負相消我們已error的平方相加，也就是square error。<br><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mrow><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow><mi>m</mi></msubsup><mo>(</mo><msub><mi>e</mi><mi>i</mi></msub><msup><mo>)</mo><mn>2</mn></msup></mrow><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow><mi>m</mi></msubsup><mo>[</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><mi>h</mi><mo>(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>)</mo><msup><mo>]</mo><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">{\sum_{i=0}^m (e_i)^2} = \sum_{i=0}^m [y_i - h(x_i)]^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.6513970000000002em;"></span><span class="strut bottom" style="height:2.929066em;vertical-align:-1.277669em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord displaystyle textstyle uncramped"><span class="mop op-limits"><span class="vlist"><span style="top:1.1776689999999999em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord scriptstyle cramped"><span class="mord mathit">i</span><span class="mrel">=</span><span class="mord mathrm">0</span></span></span></span><span style="top:-0.000005000000000143778em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span><span class="op-symbol large-op mop">∑</span></span></span><span style="top:-1.2500050000000003em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle uncramped"><span class="mord mathit">m</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathit">e</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathit">i</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mclose"><span class="mclose">)</span><span class="vlist"><span style="top:-0.413em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle uncramped"><span class="mord mathrm">2</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span><span class="mrel">=</span><span class="mop op-limits"><span class="vlist"><span style="top:1.1776689999999999em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord scriptstyle cramped"><span class="mord mathit">i</span><span class="mrel">=</span><span class="mord mathrm">0</span></span></span></span><span style="top:-0.000005000000000143778em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span><span class="op-symbol large-op mop">∑</span></span></span><span style="top:-1.2500050000000003em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle uncramped"><span class="mord mathit">m</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mopen">[</span><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.03588em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathit">i</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mbin">−</span><span class="mord mathit">h</span><span class="mopen">(</span><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathit">i</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mclose">)</span><span class="mclose"><span class="mclose">]</span><span class="vlist"><span style="top:-0.413em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle uncramped"><span class="mord mathrm">2</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span></span></span></p>
+<h2 id="Classification-Problem"><a href="#Classification-Problem" class="headerlink" title="Classification Problem"></a>Classification Problem</h2><p>對traning set做回歸分析能得到假設函數，將不同的feature參數帶入假設函數可以得到數學模型推估的值。這個值通常是實數而非離散的值。<br>如果面對coffee or tea (or me) <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi mathvariant="normal">.</mi><mi>w</mi></msub><msub><mi mathvariant="normal">.</mi><mi>t</mi></msub><msub><mi mathvariant="normal">.</mi><mi>f</mi></msub><msub><mi mathvariant="normal">.</mi><mo>?</mo></msub></mrow><annotation encoding="application/x-tex">._w ._t ._f ._?</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.33610799999999996em;"></span><span class="strut bottom" style="height:0.6222159999999999em;vertical-align:-0.286108em;"></span><span class="base textstyle uncramped"><span class="mord"><span class="mord mathrm">.</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathit" style="margin-right:0.02691em;">w</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mord"><span class="mord mathrm">.</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathit">t</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mord"><span class="mord mathrm">.</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathit" style="margin-right:0.10764em;">f</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mord"><span class="mord mathrm">.</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mclose">?</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span></span> 這種二選一或三選一的問題時要怎麼辦呢？</p>
+<p>很直觀的想法是設下<em>decision boundary</em></p>
+<p>專有名詞是 <em>decision boundary</em> 不過概念其實很簡單</p>
+<p>簡單的decision boundary可以是單純的threshold 如果hypothesis得值超過某個數就是“Yes” 低於這個數就是“Ｎo”<br>從”coffee or tea”來看就好比：<br>如果今天的溫度超過的26°C就是：”Yes. Give me a iced coffee please.”<br>反之<br>溫度不超過26°C則是： “Nope. Give me a hot tea instead.”</p>
+<p>那如果是三選一的 “coffee, tea or me”呢…..</p>
+<p>三選一還是有辦法的，你可以對選項個別判斷在選出最接近為true的decision boundary的選項做為答案。</p>
+<p>在Supervised learning中對於classification問題可以使用Sigmoid function把hypothesis function的值對應到 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><mn>0</mn><mo separator="true">,</mo><mn>1</mn><mo>)</mo></mrow><annotation encoding="application/x-tex">(0,1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base textstyle uncramped"><span class="mopen">(</span><span class="mord mathrm">0</span><span class="mpunct">,</span><span class="mord mathrm">1</span><span class="mclose">)</span></span></span></span>之間，再用decision boundary加以分類</p>
+<h3 id="問題：-hypothesis對於誤差過於敏感"><a href="#問題：-hypothesis對於誤差過於敏感" class="headerlink" title="問題： hypothesis對於誤差過於敏感"></a>問題： hypothesis對於誤差過於敏感</h3><p>到目前為止，線性迴歸似乎可以繼續用於classification problem。可是一般的線性回歸對於誤差值的敏感程度可能會對classification造成巨大的影響。</p>
+<p>假設有一個很簡單的 “Fact” 假裝我們要利用Machine learning演算法取得一個很簡單的數學模型：<br><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>y</mi><mo>=</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">y = x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="mrel">=</span><span class="mord mathit">x</span></span></span></span></span></p>
+<p>將0.5設為decision boundary，超過( &gt;= )0.5歸類於紅色；小於5則歸類於藍色</p>
+<img src="/2017/10/16/Classification問題-Sigmoid%20function/simpleModel.png" title="y = x">
+<p>對於此模型觀測到的samples可能如下(理想的話)：</p>
+<img src="/2017/10/16/Classification問題-Sigmoid%20function/simpleModel-sample.png" title="samples of y = x">
+<p>可是觀測往往有誤差或極端值，如果出現極端值呢？</p>
+<img src="/2017/10/16/Classification問題-Sigmoid%20function/simpleModel-error.png" title="errors in y = x">
+<p>我們對這training set做graident descent看看：</p>
+<p>只有一個feature (x) 加上常數項:<br><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>h</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><msub><mi>θ</mi><mn>0</mn></msub><mo>+</mo><msub><mi>θ</mi><mn>1</mn></msub><mrow><mi>x</mi></mrow></mrow><annotation encoding="application/x-tex">h(x) = \theta_0 + \theta_1{x}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord mathit">h</span><span class="mopen">(</span><span class="mord mathit">x</span><span class="mclose">)</span><span class="mrel">=</span><span class="mord"><span class="mord mathit" style="margin-right:0.02778em;">θ</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.02778em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathrm">0</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mbin">+</span><span class="mord"><span class="mord mathit" style="margin-right:0.02778em;">θ</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.02778em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathrm">1</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mord displaystyle textstyle uncramped"><span class="mord mathit">x</span></span></span></span></span></span><br>另theta的初始值為0<br><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi mathvariant="normal">Θ</mi><mo>=</mo><mrow><mo fence="true">[</mo><mtable><mtr><mtd><mrow><mn>0</mn></mrow></mtd></mtr><mtr><mtd><mrow><mn>0</mn></mrow></mtd></mtr></mtable><mo fence="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">\Theta = \begin{bmatrix}0\\0\end{bmatrix}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.45em;"></span><span class="strut bottom" style="height:2.40003em;vertical-align:-0.95003em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord mathrm">Θ</span><span class="mrel">=</span><span class="minner displaystyle textstyle uncramped"><span class="style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size3">[</span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist"><span style="top:-0.6099999999999999em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord mathrm">0</span></span></span><span style="top:0.5900000000000003em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord mathrm">0</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span><span class="style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size3">]</span></span></span></span></span></span></span><br>X為design matrix:<br><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>X</mi><mo>=</mo><mrow><mo fence="true">[</mo><mtable><mtr><mtd><mrow><msub><mi>x</mi><mrow><mn>1</mn><mn>0</mn></mrow></msub></mrow></mtd><mtd><mrow><msub><mi>x</mi><mrow><mn>1</mn><mn>1</mn></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><mi mathvariant="normal">⋮</mi></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>x</mi><mrow><mi>m</mi><mn>0</mn></mrow></msub></mrow></mtd><mtd><mrow><msub><mi>x</mi><mrow><mi>m</mi><mn>1</mn></mrow></msub></mrow></mtd></mtr></mtable><mo fence="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">X = \begin{bmatrix}
+            x_{10}&amp;x_{11} \\
+            \vdots \\
+            x_{m0}&amp;x_{m1}
+          \end{bmatrix}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:2.08em;"></span><span class="strut bottom" style="height:3.66em;vertical-align:-1.5799999999999998em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord mathit" style="margin-right:0.07847em;">X</span><span class="mrel">=</span><span class="minner displaystyle textstyle uncramped"><span class="style-wrap reset-textstyle textstyle uncramped"><span class="delimsizing mult"><span class="vlist"><span style="top:0.9049999999999999em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="delimsizinginner delim-size4"><span>⎣</span></span></span><span style="top:-0.89502em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="delimsizinginner delim-size4"><span>⎡</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist"><span style="top:-1.24em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord scriptstyle cramped"><span class="mord mathrm">1</span><span class="mord mathrm">0</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span><span style="top:0.01999999999999985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord mathrm">⋮</span></span></span><span style="top:1.2199999999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord scriptstyle cramped"><span class="mord mathit">m</span><span class="mord mathrm">0</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist"><span style="top:-1.24em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord scriptstyle cramped"><span class="mord mathrm">1</span><span class="mord mathrm">1</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span><span style="top:1.2199999999999995em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord scriptstyle cramped"><span class="mord mathit">m</span><span class="mord mathrm">1</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span><span class="style-wrap reset-textstyle textstyle uncramped"><span class="delimsizing mult"><span class="vlist"><span style="top:0.9049999999999999em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="delimsizinginner delim-size4"><span>⎦</span></span></span><span style="top:-0.89502em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="delimsizinginner delim-size4"><span>⎤</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span></span></span></span></span><br>hypothesis可表示為:<br><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>h</mi><mo>(</mo><mi>X</mi><mo>)</mo><mo>=</mo><mi>X</mi><mi mathvariant="normal">Θ</mi><mo>=</mo><mrow><mo fence="true">[</mo><mtable><mtr><mtd><mrow><mn>1</mn></mrow></mtd><mtd><mrow><msub><mi>x</mi><mrow><mn>1</mn><mo separator="true">,</mo><mn>1</mn></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><mi mathvariant="normal">⋮</mi></mrow></mtd></mtr><mtr><mtd><mrow><mn>1</mn></mrow></mtd><mtd><mrow><msub><mi>x</mi><mrow><mi>m</mi><mo separator="true">,</mo><mn>1</mn></mrow></msub></mrow></mtd></mtr></mtable><mo fence="true">]</mo></mrow><mrow><mo fence="true">[</mo><mtable><mtr><mtd><mrow><msub><mi>θ</mi><mn>0</mn></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>θ</mi><mn>1</mn></msub></mrow></mtd></mtr></mtable><mo fence="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">h(X) = X\Theta = \begin{bmatrix}1&amp;x_{1,1}\\\vdots\\1&amp;x_{m,1}\end{bmatrix}\begin{bmatrix}\theta_0\\\theta_1\end{bmatrix}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:2.08em;"></span><span class="strut bottom" style="height:3.66em;vertical-align:-1.5799999999999998em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord mathit">h</span><span class="mopen">(</span><span class="mord mathit" style="margin-right:0.07847em;">X</span><span class="mclose">)</span><span class="mrel">=</span><span class="mord mathit" style="margin-right:0.07847em;">X</span><span class="mord mathrm">Θ</span><span class="mrel">=</span><span class="minner displaystyle textstyle uncramped"><span class="style-wrap reset-textstyle textstyle uncramped"><span class="delimsizing mult"><span class="vlist"><span style="top:0.9049999999999999em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="delimsizinginner delim-size4"><span>⎣</span></span></span><span style="top:-0.89502em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="delimsizinginner delim-size4"><span>⎡</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist"><span style="top:-1.24em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord mathrm">1</span></span></span><span style="top:0.01999999999999985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord mathrm">⋮</span></span></span><span style="top:1.2199999999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord mathrm">1</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist"><span style="top:-1.24em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord scriptstyle cramped"><span class="mord mathrm">1</span><span class="mpunct">,</span><span class="mord mathrm">1</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span><span style="top:1.2199999999999995em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord scriptstyle cramped"><span class="mord mathit">m</span><span class="mpunct">,</span><span class="mord mathrm">1</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span><span class="style-wrap reset-textstyle textstyle uncramped"><span class="delimsizing mult"><span class="vlist"><span style="top:0.9049999999999999em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="delimsizinginner delim-size4"><span>⎦</span></span></span><span style="top:-0.89502em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="delimsizinginner delim-size4"><span>⎤</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span><span class="minner displaystyle textstyle uncramped"><span class="style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size3">[</span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist"><span style="top:-0.6099999999999999em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord"><span class="mord mathit" style="margin-right:0.02778em;">θ</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.02778em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathrm">0</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span><span style="top:0.5900000000000003em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord"><span class="mord mathit" style="margin-right:0.02778em;">θ</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.02778em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathrm">1</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span><span class="style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size3">]</span></span></span></span></span></span></span></p>
+<p>Cost function為：<br><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>J</mi><mo>(</mo><mi>θ</mi><mo>)</mo><mo>=</mo><mfrac><mn>1</mn><mrow><mn>2</mn><mi>m</mi></mrow></mfrac><msubsup><mo>∑</mo><mi>i</mi><mi>m</mi></msubsup><mo>=</mo><mn>1</mn><mrow><mo>[</mo><mi>h</mi><mo>(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>)</mo><mo>−</mo><msub><mi>y</mi><mi>i</mi></msub><msup><mo>]</mo><mn>2</mn></msup></mrow></mrow><annotation encoding="application/x-tex">J(\theta) = \frac 1 {2m}\sum^m_i=1{[h(x_i) - y_i]^2}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.6513970000000002em;"></span><span class="strut bottom" style="height:2.929066em;vertical-align:-1.277669em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord mathit" style="margin-right:0.09618em;">J</span><span class="mopen">(</span><span class="mord mathit" style="margin-right:0.02778em;">θ</span><span class="mclose">)</span><span class="mrel">=</span><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span><span class="mfrac"><span class="vlist"><span style="top:0.686em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle textstyle cramped"><span class="mord textstyle cramped"><span class="mord mathrm">2</span><span class="mord mathit">m</span></span></span></span><span style="top:-0.22999999999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle textstyle uncramped frac-line"></span></span><span style="top:-0.677em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle textstyle uncramped"><span class="mord mathrm">1</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span></span><span class="mop op-limits"><span class="vlist"><span style="top:1.1776689999999999em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathit">i</span></span></span><span style="top:-0.000005000000000143778em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span><span class="op-symbol large-op mop">∑</span></span></span><span style="top:-1.2500050000000003em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle uncramped"><span class="mord mathit">m</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mrel">=</span><span class="mord mathrm">1</span><span class="mord displaystyle textstyle uncramped"><span class="mopen">[</span><span class="mord mathit">h</span><span class="mopen">(</span><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathit">i</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mclose">)</span><span class="mbin">−</span><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.03588em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord mathit">i</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mclose"><span class="mclose">]</span><span class="vlist"><span style="top:-0.413em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle uncramped"><span class="mord mathrm">2</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span></span></span></span></p>
+<p>對cost function做graident descent:<br><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi mathvariant="normal">Θ</mi><mo>:</mo><mo>=</mo><mi mathvariant="normal">Θ</mi><mo>−</mo><mi>α</mi><mi mathvariant="normal">∇</mi><mi>J</mi><mo>(</mo><mi mathvariant="normal">Θ</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">\Theta := \Theta - \alpha\nabla J(\Theta)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord mathrm">Θ</span><span class="mrel">:</span><span class="mrel">=</span><span class="mord mathrm">Θ</span><span class="mbin">−</span><span class="mord mathit" style="margin-right:0.0037em;">α</span><span class="mord mathrm">∇</span><span class="mord mathit" style="margin-right:0.09618em;">J</span><span class="mopen">(</span><span class="mord mathrm">Θ</span><span class="mclose">)</span></span></span></span></span></p>
+<h2 id="Sigmoid-function-Logistic-function"><a href="#Sigmoid-function-Logistic-function" class="headerlink" title="Sigmoid function/Logistic function"></a>Sigmoid function/Logistic function</h2><p>Sigmoid function的方程式為:<br><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>S</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mfrac><mrow><mi>L</mi></mrow><mrow><mn>1</mn><mo>+</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><mo>(</mo><mi>x</mi><mo>−</mo><msub><mi>x</mi><mn>0</mn></msub><mo>)</mo></mrow></msup></mrow></mfrac></mrow><annotation encoding="application/x-tex">S(x)=\frac{L}{1+e^{-k(x - x_0)}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.36033em;"></span><span class="strut bottom" style="height:2.14766em;vertical-align:-0.78733em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord mathit" style="margin-right:0.05764em;">S</span><span class="mopen">(</span><span class="mord mathit">x</span><span class="mclose">)</span><span class="mrel">=</span><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span><span class="mfrac"><span class="vlist"><span style="top:0.704em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle textstyle cramped"><span class="mord textstyle cramped"><span class="mord mathrm">1</span><span class="mbin">+</span><span class="mord"><span class="mord mathit">e</span><span class="vlist"><span style="top:-0.289em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord scriptstyle cramped"><span class="mord">−</span><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="mopen">(</span><span class="mord mathit">x</span><span class="mbin">−</span><span class="mord"><span class="mord mathit">x</span><span class="vlist"><span style="top:0.15em;margin-right:0.07142857142857144em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-scriptstyle scriptscriptstyle cramped"><span class="mord mathrm">0</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="mclose">)</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span></span></span></span><span style="top:-0.2300000000000001em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle textstyle uncramped frac-line"></span></span><span style="top:-0.677em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span><span class="reset-textstyle textstyle uncramped"><span class="mord textstyle uncramped"><span class="mord mathit">L</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">​</span></span>​</span></span></span><span class="sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span></span></span></span></span></span><br>英文Sigmoid為形容詞，指形似字母C或S的形狀。Sigmoid function是S型的，在<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>−</mo><mi mathvariant="normal">∞</mi></mrow><annotation encoding="application/x-tex">-\infty</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.58333em;"></span><span class="strut bottom" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="base textstyle uncramped"><span class="mord">−</span><span class="mord mathrm">∞</span></span></span></span>趨近於0；在<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>+</mo><mi mathvariant="normal">∞</mi></mrow><annotation encoding="application/x-tex">+\infty</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.58333em;"></span><span class="strut bottom" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="base textstyle uncramped"><span class="mord">+</span><span class="mord mathrm">∞</span></span></span></span>趨近於<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>L</mi></mrow><annotation encoding="application/x-tex">L</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit">L</span></span></span></span></p>
+<h3 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h3><p>在machine learning中的classification問題中我們只在乎true or false這種離散的結論，因此我們不太在乎function的range。</p>
+<p>試想（-5,5)區間有多少real number? 無限<br>(-1, 1)呢？還是無限<br>(-0.1, 0.1) 內的real number還是無限個</p>
+<p>所以其實不用太care function的range</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://minecraftxwinp.github.io/2017/10/16/Classification問題-Sigmoid function/" data-id="cj9mv2x72000dtjsaa3kg977d" class="article-share-link">Share</a>
+      
+        <a href="https://minecraftxwinp.github.io/2017/10/16/Classification問題-Sigmoid function/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-C-在Class內定義常數-constant-的方法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/19/C-在Class內定義常數-constant-的方法/" class="article-date">
+  <time datetime="2017-08-19T06:09:05.000Z" itemprop="datePublished">2017-08-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/19/C-在Class內定義常數-constant-的方法/">C++在Class內定義常數(constant)的方法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>要在class之中定義常數會遇到如何初始化該常數的問題。<br>C++11以前的標準不允許在class definition中初始化members。</p>
+<h3 id="嘗試直接在class-definition中初始化變數"><a href="#嘗試直接在class-definition中初始化變數" class="headerlink" title="嘗試直接在class definition中初始化變數"></a>嘗試直接在class definition中初始化變數</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Greeting</span> &#123;</span></div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> message = <span class="string">"Hello!"</span>;</div><div class="line">		<span class="function"><span class="keyword">void</span> <span class="title">greet</span><span class="params">()</span> </span>&#123;</div><div class="line">			<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; message &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">		&#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>compile以上snippet會產生錯誤：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">/home/winxp/project/c++Partices/greeting/greeting.cpp:6:31:warning:&lt;/span&gt; non-static data member initializers only available with -std=c++11 or -std=gnu++11</div><div class="line">   const std::string message = <span class="string">"Hello!"</span>;</div><div class="line">                               ^</div></pre></td></tr></table></figure>
+<p>編譯器說無法初始化non-static data member，還說該功能只能在c++11(以上?)使用</p>
+<h3 id="non-static不行-那麼-static呢"><a href="#non-static不行-那麼-static呢" class="headerlink" title="non-static不行 那麼 static呢?"></a>non-static不行 那麼 static呢?</h3><p>將第五行改成這樣：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">static</span> <span class="built_in">std</span>::<span class="built_in">string</span> message = <span class="string">"Hello!"</span>;</div></pre></td></tr></table></figure>
+<p>嘗試編譯：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">/home/winxp/project/c++Partices/greeting/greeting.cpp:6:38: error: invalid in-class initialization of static data member of non-integral type ‘const string &#123;aka const std::__cxx11::basic_string&lt;char&gt;&#125;’</div><div class="line">   const static std::string message = &quot;Hello!&quot;;</div><div class="line"></div><div class="line">/home/winxp/project/c++Partices/greeting/greeting.cpp:6:38: error: call to non-constexpr function‘std::__cxx11::basic_string&lt;_CharT, _Traits, _Alloc&gt;::basic_string (const _CharT*, const _Alloc&amp;) [with _CharT = char; _Traits = std::char_traits&lt;char&gt;; _Alloc = std::allocator&lt;char&gt;]’</div><div class="line"></div><div class="line"></div></pre></td></tr></table></figure>
+<p>第二個錯誤訊息是語意錯誤(Semantic error)與C++標準有關。</p>
+<p>第一個錯誤訊息則是說：”非intergal型別的class內靜態data member初始化是無效的”</p>
+<p>看來std::string是非integral type所以雖然是static type仍然無法在class內初始化</p>
+<h3 id="甚麼是Integral-type"><a href="#甚麼是Integral-type" class="headerlink" title="甚麼是Integral type?"></a>甚麼是Integral type?</h3><p>在Quora上的問題 <a href="https://www.quora.com/What-are-integral-types-in-C++" target="_blank" rel="external">What are integra types in C++?</a></p>
+<p>從答案可以很清楚地了解到Integral types是C++型別系統中對於型別的分類，屬於這類的Type有：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>布林變數</td>
+<td>bool</td>
+</tr>
+<tr>
+<td>字元</td>
+<td></td>
+</tr>
+<tr>
+<td>窄字元</td>
+<td>char</td>
+</tr>
+<tr>
+<td>寬字元</td>
+<td>char16_t</td>
+</tr>
+<tr>
+<td></td>
+<td>char32_t</td>
+</tr>
+<tr>
+<td></td>
+<td>wchar_t</td>
+</tr>
+<tr>
+<td>整數</td>
+<td>int</td>
+</tr>
+</tbody>
+</table>
+<p>(包含使用unsigned或short/long keyword衍生的型別)</p>
+<p>從上面列出的type觀察可以發現這些type大多很簡單，能用整數表示，以幾個byte的形式存於記憶體。floating point，當作反例，則是需要特別的encoding(如：IEEE-754)才能表示所存數值的type。</p>
+<p>再怎麼查，得到的答案都是一個list告訴你那些type是Integral type。可是為需要區分是否為Integral type呢?WHY?</p>
+<h4 id="我猜可能跟ISA或compiler實作有關吧"><a href="#我猜可能跟ISA或compiler實作有關吧" class="headerlink" title="我猜可能跟ISA或compiler實作有關吧?"></a>我猜可能跟ISA或compiler實作有關吧?</h4><p>* ISA =&gt; Instruction Set Architecture</p>
+<p>常數被指定後就不能被變更，編譯器可以很安心的把它當作macro般在程式碼中展開、inline。在編譯階段任何參照到常數的地方直接抽換成該常數的值。如此一來，常數在runtime可以說是不存在的，因為他的值已經inline到text section而非可以被讀取的變數，也就代表常數沒有address。</p>
+<p>char或bool是以整數的形態存於記憶體中，C++裡面可以對char或bool可以像對待數字一樣進行加減乘除。或許被歸類在Integral type的資料可以直接給ALU做運算並依照其type再進行解釋(例如：非0整數作為bool為true)。ISA提供了運算operation，因此編譯器可以很放心的直接把bytes交給機器處理。</p>
+<p>floating point或其他user data type可能就無法直接交給ISA處理了，因此沒辦法直接inline，在runtime需要有一塊記憶體儲存其data member也需要address以供參照。</p>
+<h3 id="char-是integral-type那麼char-是嗎"><a href="#char-是integral-type那麼char-是嗎" class="headerlink" title="char 是integral type那麼char[]是嗎?"></a>char 是integral type那麼char[]是嗎?</h3><p><span style="color: red">Nope!</span></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">/home/winxp/project/c++Partices/greeting/greeting.cpp:6:33: error: invalid in-class initialization of static data member of non-integral type ‘const char []’</div><div class="line">   const static char message[] = &quot;Hello!&quot;;</div><div class="line">                                 ^</div></pre></td></tr></table></figure>
+<p>恩…我想也是。array本身代表連續的記憶體空間要怎麼inline呢?</p>
+<h3 id="Any-other-way"><a href="#Any-other-way" class="headerlink" title="Any other way?"></a>Any other way?</h3><p><a href="http://www.stroustrup.com/bs_faq2.html#in-class" target="_blank" rel="external">C++之父 stroustrup的網站</a> 提供了原因及方法。</p>
+<h4 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h4><h5 id="引自stroustrup-的網站"><a href="#引自stroustrup-的網站" class="headerlink" title="引自stroustrup 的網站"></a>引自stroustrup 的網站</h5><blockquote><p>A class is typically declared in a header file and a header file is typically included into many translation units. However, to avoid complicated linker rules, C++ requires that every object has a unique definition. That rule would be broken if C++ allowed in-class definition of entities that needed to be stored in memory as objects.</p>
+</blockquote>
+<p>通常class在header檔中定義，而header檔通常被許多翻譯單元include。為了避免複雜的linker發則C++要求每個物件都要有單一獨特的定義。若C++允許class內定義一個需要被儲存在記憶體的實體，那會打破此規則。</p>
+<p>如果一個class的data member是另一個物件那麼可以說該class的定義相依於另一個物件，因為prototype definition主要給compiler決定要分配多少記憶體空間。因此要計算出此class所需的空間還得計算出其data member的空間。如果該data member也相依於其他物件，甚至是目前正在定義的物件…linker勢必要時做複雜的規則避免loop。</p>
+<h4 id="解決方法"><a href="#解決方法" class="headerlink" title="解決方法"></a>解決方法</h4><p>要如何定義非intergal的data member?</p>
+<p>解決方法即是不要使用in-class initialization。把初始化expression移到constructor或是class definition之外。</p>
+<h4 id="非static常數-將初始化移置constructor"><a href="#非static常數-將初始化移置constructor" class="headerlink" title="非static常數(將初始化移置constructor)"></a>非static常數(將初始化移置constructor)</h4><p>在constructor初始化常數。<br>跟java類似與許final/const留到constructor時才初始化，然而要在C++的constructor初始化常數必須透過initializer-list的方式。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Greeting</span> &#123;</span></div><div class="line">  <span class="keyword">public</span>:</div><div class="line">    <span class="comment">//const static char message[] = "Hello!";</span></div><div class="line">    <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> message;</div><div class="line">    Greeting() : message(<span class="string">"Hello From constructor"</span>) &#123;&#125;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">greet</span><span class="params">()</span> </span>&#123;</div><div class="line">      <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; message &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div></pre></td></tr></table></figure></p>
+<h4 id="static常數-使用out-of-class-definition"><a href="#static常數-使用out-of-class-definition" class="headerlink" title="static常數(使用out-of-class definition)"></a>static常數(使用out-of-class definition)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">class Greeting &#123;</div><div class="line">  public:</div><div class="line">    //const static char message[] = &quot;Hello!&quot;;</div><div class="line">    static const std::string message;</div><div class="line">    //Greeting() : message(&quot;Hello From constructor&quot;) &#123;&#125;</div><div class="line">    void greet() &#123;</div><div class="line">      std::cout &lt;&lt; message &lt;&lt; std::endl;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">const std::string Greeting::message = &quot;Hello from outside&quot;;</div><div class="line"></div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://minecraftxwinp.github.io/2017/08/19/C-在Class內定義常數-constant-的方法/" data-id="cj9mv2x71000ctjsalvylw3hd" class="article-share-link">Share</a>
+      
+        <a href="https://minecraftxwinp.github.io/2017/08/19/C-在Class內定義常數-constant-的方法/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-高二的小牢騷" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/14/高二的小牢騷/" class="article-date">
+  <time datetime="2017-07-14T05:31:29.000Z" itemprop="datePublished">2017-07-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/雜記/">雜記</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/14/高二的小牢騷/">高二的小小牢騷</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在整理房間時，發現高中時用的鉛筆盒，裡面有張紙條，開頭寫著209 13號 &lt;我的名字&gt;，有班導批改的痕跡，應該是當時時常忘東忘西的我因為忘了帶週記簿而隨便找一張紙寫的。它一直在我高中用的鉛筆盒裡，放到高三直到畢業後被我丟在家裡的書桌上。大學畢業後回到家裡整理時才發現，儼然是高二寫給自己的一封信。內容為：<br><blockquote><p><span style="color:#5683ef"><br>開學了，有寒假作業考。考試時發生了一些令我不愉快的事：我忘記考試當天英文科是第幾節考，而英文的考試範圍就是那本單字書。<del>假設</del>英文是接在數學科後面考，<del>結果</del>考完數學時我要去拿我的單字書，令人傷心的是，我的書包東倒西歪的，單字書也不翼而飛。一向不太整潔的我還特地在考前把我的書包擺正。而我們班就是有人那麼自私。我沒大肆宣揚，書包放在原位，希望考試結束時我的單字書會回來，但是至今仁不見其蹤影。我想我們都該努力提升自己的道德標準，不足的地方還煩請師長指正。畢竟有些<em>沒品</em>的事情，只是出自當事人的不經心。<br></span></p>
+</blockquote><br>班導的回應是：<br><blockquote><p><span style="color:#ef5656"><br>&lt;我的名字&gt;：需要老師幫忙吧?!你別對班上的同學灰心，或許是每個人的書都很像，你可以在書包上，加註一些特殊符號…。總之，班導會在加強宣導!!<br></span></p>
+</blockquote></p>
+<h2 id="今天的我"><a href="#今天的我" class="headerlink" title="今天的我"></a>今天的我</h2><p>我想這篇週記應該是我趁早自習或是下課時間加緊完成的，句子有些不通順。如今我再次讀了一遍後覺得自己當初想表達的重點只有三個，其他都是廢話XD甚至覺得讀起來有些八股：</p>
+<ol>
+<li>“我的單字書不見了” =&gt; 原由</li>
+<li>“有些人就是那麼自私” =&gt; 指責</li>
+<li>“還煩請師長指正” =&gt; 希望老師能管管班上同學</li>
+</ol>
+<p>老師說的對，別人拿錯、或是翻到我的書包可能只是因為他們都長得差不多而不是動用想貪圖方便的私心。</p>
+<p>當我發現自己的東西不見的時候，立馬咬死是他人所為而陷入憤怒的情緒，或許也算是自私的表現。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://minecraftxwinp.github.io/2017/07/14/高二的小牢騷/" data-id="cj9mv2x75000gtjsat1zwsnd2" class="article-share-link">Share</a>
+      
+        <a href="https://minecraftxwinp.github.io/2017/07/14/高二的小牢騷/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Cryptography-Chipher-Definition" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/01/Cryptography-Chipher-Definition/" class="article-date">
+  <time datetime="2017-07-01T11:15:00.000Z" itemprop="datePublished">2017-07-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Lecture-notes/">Lecture notes</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/01/Cryptography-Chipher-Definition/">Cryptography - Chipher Definition</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>線上課程：<a href="https://www.coursera.org/learn/crypto" target="_blank" rel="external">密碼學 I</a></p>
+<p>Cipher能加密message(訊息)為chiphertext(密文)</p>
+<p>cipher能解密ciphertext為message(訊息)</p>
+<h3 id="加密定義"><a href="#加密定義" class="headerlink" title="加密定義"></a>加密定義</h3><p>令加密演算法為$E$<br>解密演算法為$\mathcal{D}$<br>密鑰空間(key space)為$K$ (任一密鑰為$k$)<br>明文空間為$\mathcal{M}$ (任一訊息為$m$)<br>加密演算法產生的密文為$c$ =&gt; 所有加密演算法$\mathcal{D}$能產生的密文的集合為$\mathcal{C}$</p>
+<h4 id="Definition"><a href="#Definition" class="headerlink" title="Definition"></a>Definition</h4><p>$E:=(\mathcal{K},\mathcal{M})=\mathcal{C}$</p>
+<h3 id="解密定義"><a href="#解密定義" class="headerlink" title="解密定義"></a>解密定義</h3><p>令解密演算法為$D$</p>
+<p>$D:=(\mathcal{K},\mathcal{C})=\mathcal{M}$</p>
+<h3 id="加密解密寫一起"><a href="#加密解密寫一起" class="headerlink" title="加密解密寫一起"></a>加密解密寫一起</h3><p>$\forall{m}\in{\mathcal{M}}$<br>$D\bigl(k,E(K,m)\bigr)=m$</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://minecraftxwinp.github.io/2017/07/01/Cryptography-Chipher-Definition/" data-id="cj9mv2x73000etjsalmdjpx9t" class="article-share-link">Share</a>
+      
+        <a href="https://minecraftxwinp.github.io/2017/07/01/Cryptography-Chipher-Definition/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cryptography/">cryptography</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Lecture-notes/">Lecture notes</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/雜記/">雜記</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">標籤</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/cmake/">cmake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cryptography/">cryptography</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">標籤雲</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/cmake/" style="font-size: 10px;">cmake</a> <a href="/tags/cryptography/" style="font-size: 10px;">cryptography</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">彙整</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/">用CMake在建置時複製檔案到輸出執行檔的目錄</a>
+          </li>
+        
+          <li>
+            <a href="/2017/10/16/Classification問題-Sigmoid function/">Classification問題-Sigmoid function</a>
+          </li>
+        
+          <li>
+            <a href="/2017/08/19/C-在Class內定義常數-constant-的方法/">C++在Class內定義常數(constant)的方法</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/14/高二的小牢騷/">高二的小小牢騷</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/01/Cryptography-Chipher-Definition/">Cryptography - Chipher Definition</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 Tony Duan<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'xpdn';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>

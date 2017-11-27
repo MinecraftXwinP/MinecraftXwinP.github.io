@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>用CMake在建置時複製檔案到輸出執行檔的目錄 | Xp&#39;s Deep Note</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="CMake有指令file(COPY …)可以用來copy檔案，可是如果將此指令寫在CMakeLists.txt中，該指令只會在configuration階段複製檔案。有時我們會希望每次建置、make時都copy一次檔案。 自己遇到的使用案例 : 更新shader source fileOpenGL的shader是在Runtime用OpenGL的API將source code交給drive編譯的，因">
+<meta name="keywords" content="cmake">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用CMake在建置時複製檔案到輸出執行檔的目錄">
+<meta property="og:url" content="https://minecraftxwinp.github.io/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/index.html">
+<meta property="og:site_name" content="Xp&#39;s Deep Note">
+<meta property="og:description" content="CMake有指令file(COPY …)可以用來copy檔案，可是如果將此指令寫在CMakeLists.txt中，該指令只會在configuration階段複製檔案。有時我們會希望每次建置、make時都copy一次檔案。 自己遇到的使用案例 : 更新shader source fileOpenGL的shader是在Runtime用OpenGL的API將source code交給drive編譯的，因">
+<meta property="og:locale" content="zh-TW">
+<meta property="og:image" content="https://minecraftxwinp.github.io/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/cmake-command-mode.png">
+<meta property="og:image" content="https://minecraftxwinp.github.io/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/make-custom-target.png">
+<meta property="og:image" content="https://minecraftxwinp.github.io/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/build-type-folder.png">
+<meta property="og:updated_time" content="2017-11-27T13:43:56.526Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用CMake在建置時複製檔案到輸出執行檔的目錄">
+<meta name="twitter:description" content="CMake有指令file(COPY …)可以用來copy檔案，可是如果將此指令寫在CMakeLists.txt中，該指令只會在configuration階段複製檔案。有時我們會希望每次建置、make時都copy一次檔案。 自己遇到的使用案例 : 更新shader source fileOpenGL的shader是在Runtime用OpenGL的API將source code交給drive編譯的，因">
+<meta name="twitter:image" content="https://minecraftxwinp.github.io/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/cmake-command-mode.png">
+<meta name="twitter:creator" content="@tony84727">
+  
+    <link rel="alternate" href="/atom.xml" title="Xp&#39;s Deep Note" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-101871003-2', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+</head>
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Xp&#39;s Deep Note</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">紀錄我探討過得議題及日誌</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://minecraftxwinp.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-用CMake在建置時複製檔案到輸出執行檔的目錄" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/" class="article-date">
+  <time datetime="2017-11-27T13:45:00.000Z" itemprop="datePublished">2017-11-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      用CMake在建置時複製檔案到輸出執行檔的目錄
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>CMake有指令file(COPY …)可以用來copy檔案，可是如果將此指令寫在CMakeLists.txt中，該指令只會在configuration階段複製檔案。<br>有時我們會希望每次建置、make時都copy一次檔案。</p>
+<h2 id="自己遇到的使用案例-更新shader-source-file"><a href="#自己遇到的使用案例-更新shader-source-file" class="headerlink" title="自己遇到的使用案例 : 更新shader source file"></a>自己遇到的使用案例 : 更新shader source file</h2><p>OpenGL的shader是在Runtime用OpenGL的API將source code交給drive編譯的，因此在runtime需要有檔案提供shader的source。<br>這類檔案就像DLL一樣當程式啟動時需要能找到並載入，將檔案跟執行檔放在同一個目錄之下是最簡單的做法。</p>
+<p>因此我的需求是要cmake每次都將source tree(原始碼目錄)中的shader file複製到build tree(建置目錄)中執行檔的目錄。</p>
+<p>對於純粹想建置專案的人來說，把file(COPY …)寫在CMakeLists.txt中是OK的，因為檔案有copy到build tree就好。</p>
+<p>但是對於專案開發者來說，需要能在每次建置時都從source tree複製shader到build tree中，以確保使用最新版本的shader file執行Debug。當然也可以手動，比較麻煩就是了。</p>
+<p>如前所述，只將複製指令寫在CMakeLists.txt是不夠的。</p>
+<h2 id="利用add-custom-target或add-custom-command安插建置步驟，使任務在建置時執行"><a href="#利用add-custom-target或add-custom-command安插建置步驟，使任務在建置時執行" class="headerlink" title="利用add_custom_target或add_custom_command安插建置步驟，使任務在建置時執行"></a>利用add_custom_target或add_custom_command安插建置步驟，使任務在建置時執行</h2><p>上StackOverflow找到的相關解答：</p>
+<ul>
+<li><a href="https://stackoverflow.com/questions/36483801/cmake-softlink-resource-such-as-glsl-shaders-or-copy-each-complilation" target="_blank" rel="external">CMake : softlink resource ( such as GLSL shaders ) or copy each complilation</a></li>
+</ul>
+<p>大致上，這方法額外寫個CMake檔案並利用add_custom_target安插執行此cmake檔案的步驟，該cmake腳本內的指令就是file(COPY …)</p>
+<p>若想讓特定事件在每次建置時發生可利用這類方法</p>
+<h2 id="更好的方法"><a href="#更好的方法" class="headerlink" title="更好的方法"></a>更好的方法</h2><p>S.O.上找到的方法需要額外的cmake file，並使用script processing mode執行。我發現cmake除了processing mode也有command mode。該模式透過加入flag “-E” 切換：</p>
+<img src="/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/cmake-command-mode.png" title="CMake command mode">
+<p>cmake已經為我們準備了需多常用的指令，接下來只要如法炮製讓cmake在建置時觸發cmake的copy command就行了：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">add_custom_target</span>(</div><div class="line">    <span class="comment"># 自訂的目標名稱</span></div><div class="line">    copy_shader_files</div><div class="line">    <span class="comment"># 執行copy指令 cmake -E copy &lt;file&gt;... destination </span></div><div class="line">    <span class="variable">$&#123;CMAKE_COMMAND&#125;</span> -E copy <span class="variable">$&#123;CMAKE_SOURCE_DIR&#125;</span>/shaders/** <span class="variable">$&#123;CMAKE_BINARY_DIR&#125;</span></div><div class="line">)</div><div class="line"><span class="comment"># 用add_dependencies將自訂目標列為建置目標的dependency</span></div><div class="line"><span class="keyword">add_dependencies</span>(main copy_shader_files)</div></pre></td></tr></table></figure>
+<p>建立自訂目標後cmake會在指定的建置系統中建置對應的目標，如果建置系統為Unix make可以用以下指令執行copy指令：</p>
+<img src="/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/make-custom-target.png" title="Invoke custom target">
+<h2 id="問題-Xcode或Visual-Studio的build-type目錄"><a href="#問題-Xcode或Visual-Studio的build-type目錄" class="headerlink" title="問題: Xcode或Visual Studio的build type目錄"></a>問題: Xcode或Visual Studio的build type目錄</h2><p>若你是使用Unix make或許到目前已經功德圓滿了，建置系統會在每次建置執行檔時幫我們複製shader。可是我遇到問題了。</p>
+<p>Xcode或Visual Studio這類IDE內建build type而不同build type的執行檔通常會放在不同目錄裡：</p>
+<img src="/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/build-type-folder.png" title="Problems with build type folder">
+<p>Oh no..輸出的執行檔main在Debug下，而我們的shaders卻在Debug之外。可見CMAKE_SOURCE_DIR變數指向的位置跟實際執行檔輸出的位置是可能有出入的。</p>
+<p>執行檔會輸出到哪是IDE決定的，而IDE的專案是CMake的Generator產生的，因此除非將路徑寫死在CMakeLists.txt，否則輸出路徑是generator決定的。</p>
+<p>shader被複製到哪裡並不重要，只要他跟輸出的執行擋在同一個目錄即可。</p>
+<p>對於Generating階段才做的決定cmake有一類像placeholder的特殊變數(`$’開頭，很像變數)代表generator給出的值。</p>
+<p>使用 $<target_file_dir:<目標名稱>&gt; 代表目標檔案的目錄。</target_file_dir:<目標名稱></p>
+<p>我的執行檔建置目標稱為main，因此 $<target_file_dir:main> 指向main目標產生的檔案的所在目錄，也就是執行檔所在的目錄。</target_file_dir:main></p>
+<p>可是，單純的修改先前的code會得到cyclic depedencies錯誤。</p>
+<p>建置目標的depdencies為我們的copy_shader_files目標，而要決定檔案目的地的卻又是建置目標，造成循環相依性。</p>
+<h2 id="add-custom-command"><a href="#add-custom-command" class="headerlink" title="add_custom_command"></a>add_custom_command</h2><p>別灰心，除了add_custom_target，我們還可以透過add_custom_command叫cmake幫我們做事。只是add_custom_command不會在建置系統中建立任務或目標，沒辦法手動啟動，對於建置系統來說就是建置執行檔的一個環節。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">add_custom_command</span>(</div><div class="line">    <span class="comment"># 指令依附的目標</span></div><div class="line">    TARGET main</div><div class="line">    <span class="comment"># 自訂指令的執行時機</span></div><div class="line">    POST_BUILD</div><div class="line">    <span class="comment"># COMMAND關鍵字後為執行指令</span></div><div class="line">    COMMAND</div><div class="line">        <span class="variable">$&#123;CMAKE_COMMAND&#125;</span> -E copy <span class="variable">$&#123;CMAKE_SOURCE_DIR&#125;</span>/shaders/** $&lt;TARGET_FILE_DIR:main&gt;</div><div class="line">)</div></pre></td></tr></table></figure>
+<p>add_custom_command的語法稍微不同，不過指令依然是cmake的command mode。</p>
+<p>目前這段code可以滿足我的需求： 在每次建置時把檔案複製到執行檔的目錄中。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://minecraftxwinp.github.io/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/" data-id="cjagyw2pb00000quk20ugige1" class="article-share-link">Share</a>
+      
+        <a href="https://minecraftxwinp.github.io/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cmake/">cmake</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/10/16/Classification問題-Sigmoid function/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Classification問題-Sigmoid function</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Lecture-notes/">Lecture notes</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/雜記/">雜記</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">標籤</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/cmake/">cmake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cryptography/">cryptography</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">標籤雲</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/cmake/" style="font-size: 10px;">cmake</a> <a href="/tags/cryptography/" style="font-size: 10px;">cryptography</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">彙整</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/">用CMake在建置時複製檔案到輸出執行檔的目錄</a>
+          </li>
+        
+          <li>
+            <a href="/2017/10/16/Classification問題-Sigmoid function/">Classification問題-Sigmoid function</a>
+          </li>
+        
+          <li>
+            <a href="/2017/08/19/C-在Class內定義常數-constant-的方法/">C++在Class內定義常數(constant)的方法</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/14/高二的小牢騷/">高二的小小牢騷</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/01/Cryptography-Chipher-Definition/">Cryptography - Chipher Definition</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 Tony Duan<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'xpdn';
+  
+  var disqus_url = 'https://minecraftxwinp.github.io/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>

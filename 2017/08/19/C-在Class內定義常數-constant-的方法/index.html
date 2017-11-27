@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>C++在Class內定義常數(constant)的方法 | Xp&#39;s Deep Note</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="要在class之中定義常數會遇到如何初始化該常數的問題。C++11以前的標準不允許在class definition中初始化members。 嘗試直接在class definition中初始化變數12345678910#include &amp;lt;string&amp;gt;#include &amp;lt;iostream&amp;gt;class Greeting &amp;#123;	public:		const std::s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++在Class內定義常數(constant)的方法">
+<meta property="og:url" content="https://minecraftxwinp.github.io/2017/08/19/C-在Class內定義常數-constant-的方法/index.html">
+<meta property="og:site_name" content="Xp&#39;s Deep Note">
+<meta property="og:description" content="要在class之中定義常數會遇到如何初始化該常數的問題。C++11以前的標準不允許在class definition中初始化members。 嘗試直接在class definition中初始化變數12345678910#include &amp;lt;string&amp;gt;#include &amp;lt;iostream&amp;gt;class Greeting &amp;#123;	public:		const std::s">
+<meta property="og:locale" content="zh-TW">
+<meta property="og:updated_time" content="2017-11-05T12:01:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C++在Class內定義常數(constant)的方法">
+<meta name="twitter:description" content="要在class之中定義常數會遇到如何初始化該常數的問題。C++11以前的標準不允許在class definition中初始化members。 嘗試直接在class definition中初始化變數12345678910#include &amp;lt;string&amp;gt;#include &amp;lt;iostream&amp;gt;class Greeting &amp;#123;	public:		const std::s">
+<meta name="twitter:creator" content="@tony84727">
+  
+    <link rel="alternate" href="/atom.xml" title="Xp&#39;s Deep Note" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-101871003-2', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+</head>
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Xp&#39;s Deep Note</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">紀錄我探討過得議題及日誌</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://minecraftxwinp.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-C-在Class內定義常數-constant-的方法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/19/C-在Class內定義常數-constant-的方法/" class="article-date">
+  <time datetime="2017-08-19T06:09:05.000Z" itemprop="datePublished">2017-08-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      C++在Class內定義常數(constant)的方法
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>要在class之中定義常數會遇到如何初始化該常數的問題。<br>C++11以前的標準不允許在class definition中初始化members。</p>
+<h3 id="嘗試直接在class-definition中初始化變數"><a href="#嘗試直接在class-definition中初始化變數" class="headerlink" title="嘗試直接在class definition中初始化變數"></a>嘗試直接在class definition中初始化變數</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Greeting</span> &#123;</span></div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> message = <span class="string">"Hello!"</span>;</div><div class="line">		<span class="function"><span class="keyword">void</span> <span class="title">greet</span><span class="params">()</span> </span>&#123;</div><div class="line">			<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; message &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">		&#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>compile以上snippet會產生錯誤：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">/home/winxp/project/c++Partices/greeting/greeting.cpp:6:31:warning:&lt;/span&gt; non-static data member initializers only available with -std=c++11 or -std=gnu++11</div><div class="line">   const std::string message = <span class="string">"Hello!"</span>;</div><div class="line">                               ^</div></pre></td></tr></table></figure>
+<p>編譯器說無法初始化non-static data member，還說該功能只能在c++11(以上?)使用</p>
+<h3 id="non-static不行-那麼-static呢"><a href="#non-static不行-那麼-static呢" class="headerlink" title="non-static不行 那麼 static呢?"></a>non-static不行 那麼 static呢?</h3><p>將第五行改成這樣：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">static</span> <span class="built_in">std</span>::<span class="built_in">string</span> message = <span class="string">"Hello!"</span>;</div></pre></td></tr></table></figure>
+<p>嘗試編譯：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">/home/winxp/project/c++Partices/greeting/greeting.cpp:6:38: error: invalid in-class initialization of static data member of non-integral type ‘const string &#123;aka const std::__cxx11::basic_string&lt;char&gt;&#125;’</div><div class="line">   const static std::string message = &quot;Hello!&quot;;</div><div class="line"></div><div class="line">/home/winxp/project/c++Partices/greeting/greeting.cpp:6:38: error: call to non-constexpr function‘std::__cxx11::basic_string&lt;_CharT, _Traits, _Alloc&gt;::basic_string (const _CharT*, const _Alloc&amp;) [with _CharT = char; _Traits = std::char_traits&lt;char&gt;; _Alloc = std::allocator&lt;char&gt;]’</div><div class="line"></div><div class="line"></div></pre></td></tr></table></figure>
+<p>第二個錯誤訊息是語意錯誤(Semantic error)與C++標準有關。</p>
+<p>第一個錯誤訊息則是說：”非intergal型別的class內靜態data member初始化是無效的”</p>
+<p>看來std::string是非integral type所以雖然是static type仍然無法在class內初始化</p>
+<h3 id="甚麼是Integral-type"><a href="#甚麼是Integral-type" class="headerlink" title="甚麼是Integral type?"></a>甚麼是Integral type?</h3><p>在Quora上的問題 <a href="https://www.quora.com/What-are-integral-types-in-C++" target="_blank" rel="external">What are integra types in C++?</a></p>
+<p>從答案可以很清楚地了解到Integral types是C++型別系統中對於型別的分類，屬於這類的Type有：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>布林變數</td>
+<td>bool</td>
+</tr>
+<tr>
+<td>字元</td>
+<td></td>
+</tr>
+<tr>
+<td>窄字元</td>
+<td>char</td>
+</tr>
+<tr>
+<td>寬字元</td>
+<td>char16_t</td>
+</tr>
+<tr>
+<td></td>
+<td>char32_t</td>
+</tr>
+<tr>
+<td></td>
+<td>wchar_t</td>
+</tr>
+<tr>
+<td>整數</td>
+<td>int</td>
+</tr>
+</tbody>
+</table>
+<p>(包含使用unsigned或short/long keyword衍生的型別)</p>
+<p>從上面列出的type觀察可以發現這些type大多很簡單，能用整數表示，以幾個byte的形式存於記憶體。floating point，當作反例，則是需要特別的encoding(如：IEEE-754)才能表示所存數值的type。</p>
+<p>再怎麼查，得到的答案都是一個list告訴你那些type是Integral type。可是為需要區分是否為Integral type呢?WHY?</p>
+<h4 id="我猜可能跟ISA或compiler實作有關吧"><a href="#我猜可能跟ISA或compiler實作有關吧" class="headerlink" title="我猜可能跟ISA或compiler實作有關吧?"></a>我猜可能跟ISA或compiler實作有關吧?</h4><p>* ISA =&gt; Instruction Set Architecture</p>
+<p>常數被指定後就不能被變更，編譯器可以很安心的把它當作macro般在程式碼中展開、inline。在編譯階段任何參照到常數的地方直接抽換成該常數的值。如此一來，常數在runtime可以說是不存在的，因為他的值已經inline到text section而非可以被讀取的變數，也就代表常數沒有address。</p>
+<p>char或bool是以整數的形態存於記憶體中，C++裡面可以對char或bool可以像對待數字一樣進行加減乘除。或許被歸類在Integral type的資料可以直接給ALU做運算並依照其type再進行解釋(例如：非0整數作為bool為true)。ISA提供了運算operation，因此編譯器可以很放心的直接把bytes交給機器處理。</p>
+<p>floating point或其他user data type可能就無法直接交給ISA處理了，因此沒辦法直接inline，在runtime需要有一塊記憶體儲存其data member也需要address以供參照。</p>
+<h3 id="char-是integral-type那麼char-是嗎"><a href="#char-是integral-type那麼char-是嗎" class="headerlink" title="char 是integral type那麼char[]是嗎?"></a>char 是integral type那麼char[]是嗎?</h3><p><span style="color: red">Nope!</span></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">/home/winxp/project/c++Partices/greeting/greeting.cpp:6:33: error: invalid in-class initialization of static data member of non-integral type ‘const char []’</div><div class="line">   const static char message[] = &quot;Hello!&quot;;</div><div class="line">                                 ^</div></pre></td></tr></table></figure>
+<p>恩…我想也是。array本身代表連續的記憶體空間要怎麼inline呢?</p>
+<h3 id="Any-other-way"><a href="#Any-other-way" class="headerlink" title="Any other way?"></a>Any other way?</h3><p><a href="http://www.stroustrup.com/bs_faq2.html#in-class" target="_blank" rel="external">C++之父 stroustrup的網站</a> 提供了原因及方法。</p>
+<h4 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h4><h5 id="引自stroustrup-的網站"><a href="#引自stroustrup-的網站" class="headerlink" title="引自stroustrup 的網站"></a>引自stroustrup 的網站</h5><blockquote><p>A class is typically declared in a header file and a header file is typically included into many translation units. However, to avoid complicated linker rules, C++ requires that every object has a unique definition. That rule would be broken if C++ allowed in-class definition of entities that needed to be stored in memory as objects.</p>
+</blockquote>
+<p>通常class在header檔中定義，而header檔通常被許多翻譯單元include。為了避免複雜的linker發則C++要求每個物件都要有單一獨特的定義。若C++允許class內定義一個需要被儲存在記憶體的實體，那會打破此規則。</p>
+<p>如果一個class的data member是另一個物件那麼可以說該class的定義相依於另一個物件，因為prototype definition主要給compiler決定要分配多少記憶體空間。因此要計算出此class所需的空間還得計算出其data member的空間。如果該data member也相依於其他物件，甚至是目前正在定義的物件…linker勢必要時做複雜的規則避免loop。</p>
+<h4 id="解決方法"><a href="#解決方法" class="headerlink" title="解決方法"></a>解決方法</h4><p>要如何定義非intergal的data member?</p>
+<p>解決方法即是不要使用in-class initialization。把初始化expression移到constructor或是class definition之外。</p>
+<h4 id="非static常數-將初始化移置constructor"><a href="#非static常數-將初始化移置constructor" class="headerlink" title="非static常數(將初始化移置constructor)"></a>非static常數(將初始化移置constructor)</h4><p>在constructor初始化常數。<br>跟java類似與許final/const留到constructor時才初始化，然而要在C++的constructor初始化常數必須透過initializer-list的方式。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Greeting</span> &#123;</span></div><div class="line">  <span class="keyword">public</span>:</div><div class="line">    <span class="comment">//const static char message[] = "Hello!";</span></div><div class="line">    <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> message;</div><div class="line">    Greeting() : message(<span class="string">"Hello From constructor"</span>) &#123;&#125;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">greet</span><span class="params">()</span> </span>&#123;</div><div class="line">      <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; message &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div></pre></td></tr></table></figure></p>
+<h4 id="static常數-使用out-of-class-definition"><a href="#static常數-使用out-of-class-definition" class="headerlink" title="static常數(使用out-of-class definition)"></a>static常數(使用out-of-class definition)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">class Greeting &#123;</div><div class="line">  public:</div><div class="line">    //const static char message[] = &quot;Hello!&quot;;</div><div class="line">    static const std::string message;</div><div class="line">    //Greeting() : message(&quot;Hello From constructor&quot;) &#123;&#125;</div><div class="line">    void greet() &#123;</div><div class="line">      std::cout &lt;&lt; message &lt;&lt; std::endl;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">const std::string Greeting::message = &quot;Hello from outside&quot;;</div><div class="line"></div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://minecraftxwinp.github.io/2017/08/19/C-在Class內定義常數-constant-的方法/" data-id="cj9mv2x71000ctjsalvylw3hd" class="article-share-link">Share</a>
+      
+        <a href="https://minecraftxwinp.github.io/2017/08/19/C-在Class內定義常數-constant-的方法/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/10/16/Classification問題-Sigmoid function/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Classification問題-Sigmoid function
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/07/14/高二的小牢騷/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">高二的小小牢騷</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Lecture-notes/">Lecture notes</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/雜記/">雜記</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">標籤</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/cmake/">cmake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cryptography/">cryptography</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">標籤雲</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/cmake/" style="font-size: 10px;">cmake</a> <a href="/tags/cryptography/" style="font-size: 10px;">cryptography</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">彙整</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/">用CMake在建置時複製檔案到輸出執行檔的目錄</a>
+          </li>
+        
+          <li>
+            <a href="/2017/10/16/Classification問題-Sigmoid function/">Classification問題-Sigmoid function</a>
+          </li>
+        
+          <li>
+            <a href="/2017/08/19/C-在Class內定義常數-constant-的方法/">C++在Class內定義常數(constant)的方法</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/14/高二的小牢騷/">高二的小小牢騷</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/01/Cryptography-Chipher-Definition/">Cryptography - Chipher Definition</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 Tony Duan<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'xpdn';
+  
+  var disqus_url = 'https://minecraftxwinp.github.io/2017/08/19/C-在Class內定義常數-constant-的方法/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>

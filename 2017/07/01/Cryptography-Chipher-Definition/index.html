@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>Cryptography - Chipher Definition | Xp&#39;s Deep Note</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="線上課程：密碼學 I Cipher能加密message(訊息)為chiphertext(密文) cipher能解密ciphertext為message(訊息) 加密定義令加密演算法為$E$解密演算法為$\mathcal{D}$密鑰空間(key space)為$K$ (任一密鑰為$k$)明文空間為$\mathcal{M}$ (任一訊息為$m$)加密演算法產生的密文為$c$ =&amp;gt; 所有加密演算法">
+<meta name="keywords" content="cryptography">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cryptography - Chipher Definition">
+<meta property="og:url" content="https://minecraftxwinp.github.io/2017/07/01/Cryptography-Chipher-Definition/index.html">
+<meta property="og:site_name" content="Xp&#39;s Deep Note">
+<meta property="og:description" content="線上課程：密碼學 I Cipher能加密message(訊息)為chiphertext(密文) cipher能解密ciphertext為message(訊息) 加密定義令加密演算法為$E$解密演算法為$\mathcal{D}$密鑰空間(key space)為$K$ (任一密鑰為$k$)明文空間為$\mathcal{M}$ (任一訊息為$m$)加密演算法產生的密文為$c$ =&amp;gt; 所有加密演算法">
+<meta property="og:locale" content="zh-TW">
+<meta property="og:updated_time" content="2017-11-05T12:01:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Cryptography - Chipher Definition">
+<meta name="twitter:description" content="線上課程：密碼學 I Cipher能加密message(訊息)為chiphertext(密文) cipher能解密ciphertext為message(訊息) 加密定義令加密演算法為$E$解密演算法為$\mathcal{D}$密鑰空間(key space)為$K$ (任一密鑰為$k$)明文空間為$\mathcal{M}$ (任一訊息為$m$)加密演算法產生的密文為$c$ =&amp;gt; 所有加密演算法">
+<meta name="twitter:creator" content="@tony84727">
+  
+    <link rel="alternate" href="/atom.xml" title="Xp&#39;s Deep Note" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-101871003-2', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+</head>
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Xp&#39;s Deep Note</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">紀錄我探討過得議題及日誌</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜尋"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://minecraftxwinp.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Cryptography-Chipher-Definition" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/07/01/Cryptography-Chipher-Definition/" class="article-date">
+  <time datetime="2017-07-01T11:15:00.000Z" itemprop="datePublished">2017-07-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Lecture-notes/">Lecture notes</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Cryptography - Chipher Definition
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>線上課程：<a href="https://www.coursera.org/learn/crypto" target="_blank" rel="external">密碼學 I</a></p>
+<p>Cipher能加密message(訊息)為chiphertext(密文)</p>
+<p>cipher能解密ciphertext為message(訊息)</p>
+<h3 id="加密定義"><a href="#加密定義" class="headerlink" title="加密定義"></a>加密定義</h3><p>令加密演算法為$E$<br>解密演算法為$\mathcal{D}$<br>密鑰空間(key space)為$K$ (任一密鑰為$k$)<br>明文空間為$\mathcal{M}$ (任一訊息為$m$)<br>加密演算法產生的密文為$c$ =&gt; 所有加密演算法$\mathcal{D}$能產生的密文的集合為$\mathcal{C}$</p>
+<h4 id="Definition"><a href="#Definition" class="headerlink" title="Definition"></a>Definition</h4><p>$E:=(\mathcal{K},\mathcal{M})=\mathcal{C}$</p>
+<h3 id="解密定義"><a href="#解密定義" class="headerlink" title="解密定義"></a>解密定義</h3><p>令解密演算法為$D$</p>
+<p>$D:=(\mathcal{K},\mathcal{C})=\mathcal{M}$</p>
+<h3 id="加密解密寫一起"><a href="#加密解密寫一起" class="headerlink" title="加密解密寫一起"></a>加密解密寫一起</h3><p>$\forall{m}\in{\mathcal{M}}$<br>$D\bigl(k,E(K,m)\bigr)=m$</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://minecraftxwinp.github.io/2017/07/01/Cryptography-Chipher-Definition/" data-id="cj9mv2x73000etjsalmdjpx9t" class="article-share-link">Share</a>
+      
+        <a href="https://minecraftxwinp.github.io/2017/07/01/Cryptography-Chipher-Definition/#disqus_thread" class="article-comment-link">留言</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cryptography/">cryptography</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/07/14/高二的小牢騷/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          高二的小小牢騷
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分類</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Lecture-notes/">Lecture notes</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/雜記/">雜記</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">標籤</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/cmake/">cmake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cryptography/">cryptography</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">標籤雲</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/cmake/" style="font-size: 10px;">cmake</a> <a href="/tags/cryptography/" style="font-size: 10px;">cryptography</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">彙整</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/11/27/用CMake在建置時複製檔案到輸出執行檔的目錄/">用CMake在建置時複製檔案到輸出執行檔的目錄</a>
+          </li>
+        
+          <li>
+            <a href="/2017/10/16/Classification問題-Sigmoid function/">Classification問題-Sigmoid function</a>
+          </li>
+        
+          <li>
+            <a href="/2017/08/19/C-在Class內定義常數-constant-的方法/">C++在Class內定義常數(constant)的方法</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/14/高二的小牢騷/">高二的小小牢騷</a>
+          </li>
+        
+          <li>
+            <a href="/2017/07/01/Cryptography-Chipher-Definition/">Cryptography - Chipher Definition</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 Tony Duan<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'xpdn';
+  
+  var disqus_url = 'https://minecraftxwinp.github.io/2017/07/01/Cryptography-Chipher-Definition/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
